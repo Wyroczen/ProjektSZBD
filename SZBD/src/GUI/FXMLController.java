@@ -32,6 +32,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void Przycisk1Action(ActionEvent event) {
+        System.out.println("XDDDD");
     }
     
 }
