@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package szbd;
+package GUI;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  *
  * @author wisni
  */
-public class SZBD extends Application {
+public class FXMain extends Application {
     
     @Override
     public void start(Stage primaryStage) {
@@ -36,7 +36,7 @@ public class SZBD extends Application {
         
         Scene scene = new Scene(root, 300, 250);
         
-        primaryStage.setTitle("SZBD Giełda!");
+        primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
