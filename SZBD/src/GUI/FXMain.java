@@ -25,6 +25,8 @@ public class FXMain extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
+        System.out.println("java version: "+System.getProperty("java.version")); System.out.println("javafx.version: " + System.getProperty("javafx.version"));
+
         //Button btn = new Button();
         //btn.setText("Say 'Hello World'");
         //btn.setOnAction(new EventHandler<ActionEvent>() {
