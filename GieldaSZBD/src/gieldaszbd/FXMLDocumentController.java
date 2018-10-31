@@ -49,7 +49,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private MenuBar MenuBarEncja;
 
-    private ObservableList<ObservableList> dataSpolki;// = FXCollections.observableArrayList();
+    //private ObservableList<ObservableList> dataSpolki;// = FXCollections.observableArrayList();
+    private ObservableList<ObservableList> dataTabelki;
     //= //a może przenieść na górę?
     //FXCollections.observableArrayList(
     //        new Spolka(1, "A", "a@example.com"),
@@ -69,40 +70,17 @@ public class FXMLDocumentController implements Initializable {
     
     }
 
+    
+    
     @FXML
-    private void handleMenuItemSpolkiAction(ActionEvent event) {
-//        //TablicaEncja = new TableView<Spolka>();
-        Statement stmt = null;
-        ResultSet rs = null;
-//
-        dataSpolki = FXCollections.observableArrayList();
-//
-//        //List<Integer> idPracownikow = new ArrayList<Integer>();
-         TablicaEncja.setEditable(true); //potrzebne?
-//
-//        TablicaEncja.getColumns().clear(); //Wyczyszczenie kolumn, nie wiem czy niezbędne, sprawdzi się przy większej ilości działających
-////        TableColumn<Spolka,Integer> idCol = new TableColumn("ID");
-////        idCol.setCellValueFactory(
-////                new PropertyValueFactory<Spolka, Integer>("int1")
-////        );
-////        TableColumn str1Col = new TableColumn("STR1");
-////        str1Col.setCellValueFactory(
-////                new PropertyValueFactory<>("str1")
-////        );
-////        TableColumn str2Col = new TableColumn("STR2");
-////        str2Col.setCellValueFactory(
-////                new PropertyValueFactory<>("str2")
-////        );
-//        //idCol.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue()));
-
-        try {
-            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-//            //rs = stmt.executeQuery("select count(*) " + "from pracownicy");
-            rs = stmt.executeQuery("select * " + "from zespoly");
-            System.out.println("xd");
-
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+    private void utworzTabele(ResultSet rs, Statement stmt) throws SQLException
+    {
+        TablicaEncja.getColumns().clear();//czyści kolumny na początku
+        //TablicaEncja.getItems().clear();
+        dataTabelki = FXCollections.observableArrayList();
+        TablicaEncja.setEditable(true);
+        
+        for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                 //We are using non property style for making dynamic table
                 final int j = i;
                 TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
@@ -126,22 +104,29 @@ public class FXMLDocumentController implements Initializable {
                     row.add(rs.getString(i));
                 }
                 System.out.println("Row [1] added "+row );
-                dataSpolki.add(row);
+                dataTabelki.add(row);
                 
             }   
             //FINALLY ADDED TO TableView
-            TablicaEncja.setItems(dataSpolki);
+            TablicaEncja.setItems(dataTabelki);
+        
+    }
+    @FXML
+    private void handleMenuItemSpolkiAction(ActionEvent event) {
 
+        Statement stmt = null;
+        ResultSet rs = null;
 
-            //while (rs.next()) {
-            //dataSpolki.add(new Spolka(rs.getInt(1), "xd", "xd"));
-            //idPracownikow.add(rs.getInt(1)); //Dodawanie wszystkich elementów na listę, potrzebne? może do edycji
-            //
-            //TablicaEncja.getItems().add(new Spolka(rs.getInt(1),"xd","xd"));
-            //}
-            //System.out.println("ID: " + dataSpolki.get(10).getFirstInteger());
-            //TablicaEncja.setItems(dataSpolki);
-            //TablicaEncja.getColumns().addAll(idCol, str1Col, str2Col);
+        try {
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            rs = stmt.executeQuery("select * " + "from etaty");
+            System.out.println("xd");
+
+            
+            utworzTabele(rs,stmt);
+
+            
         } catch (SQLException ex) {
             System.out.println("Bład wykonania polecenia" + ex.toString());
         } finally {
@@ -160,49 +145,8 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        try {
-            conn.close();
-            System.out.println("Rozłączono z bazą danych");
-        } catch (SQLException ex) {
-            Logger.getLogger(GieldaSZBD.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
 
-//    public static class Spolka {
-//
-//        private final SimpleIntegerProperty int1;
-//        private final SimpleStringProperty str1;
-//        private final SimpleStringProperty str2;
-//
-//        private Spolka(Integer integer1, String string1, String string2) {
-//            this.int1 = new SimpleIntegerProperty(integer1);
-//            this.str1 = new SimpleStringProperty(string1);
-//            this.str2 = new SimpleStringProperty(string2);
-//        }
-//
-//        public Integer getFirstInteger() {
-//            return int1.get();
-//        }
-//
-//        public void setFirstInteger(Integer integer1) {
-//            int1.set(integer1);
-//        }
-//
-//        public String getFirstString() {
-//            return str1.get();
-//        }
-//
-//        public void setFirstString(String string1) {
-//            str1.set(string1);
-//        }
-//
-//        public String getSecondString() {
-//            return str2.get();
-//        }
-//
-//        public void setSecondString(String string2) {
-//            str2.set(string2);
-//        }
 
-//    }
 }
