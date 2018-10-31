@@ -5,21 +5,20 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
   <tabs>
     <Tab text="Baza">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
+                  <MenuBar fx:id="MenuBarEncja" layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
                     <menus>
-                      <Menu mnemonicParsing="false" text="Encja">
+                      <Menu fx:id="MenuEncja" mnemonicParsing="false" text="Encja">
                         <items>
-                          <MenuItem mnemonicParsing="false" text="Spolki" />
+                          <MenuItem fx:id="MenuEncjaItemSpolki" mnemonicParsing="false" onAction="#handleMenuItemSpolkiAction" text="Spolki" />
                               <MenuItem mnemonicParsing="false" text="Akcje" />
                               <MenuItem mnemonicParsing="false" text="Rynki" />
                               <MenuItem mnemonicParsing="false" text="Ludzie" />
@@ -33,12 +32,7 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <TableView layoutY="26.0" prefHeight="345.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
-                    </columns>
-                  </TableView>
+                  <TableView fx:id="TablicaEncja" layoutY="26.0" prefHeight="345.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
                </children></AnchorPane>
       </content>
     </Tab>
