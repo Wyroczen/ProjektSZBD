@@ -120,7 +120,7 @@ public class FXMLDocumentController implements Initializable {
         try {
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-            rs = stmt.executeQuery("select * " + "from etaty");
+            rs = stmt.executeQuery("select * " + "from zespoly");
             System.out.println("xd");
 
             
