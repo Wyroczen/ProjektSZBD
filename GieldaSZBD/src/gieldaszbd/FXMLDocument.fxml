@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -8,31 +13,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
   <tabs>
     <Tab text="Baza">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <MenuBar fx:id="MenuBarEncja" layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
-                    <menus>
-                      <Menu fx:id="MenuEncja" mnemonicParsing="false" text="Encja">
-                        <items>
-                          <MenuItem fx:id="MenuEncjaItemSpolki" mnemonicParsing="false" onAction="#handleMenuItemSpolkiAction" text="Spolki" />
-                              <MenuItem mnemonicParsing="false" text="Akcje" />
-                              <MenuItem mnemonicParsing="false" text="Rynki" />
-                              <MenuItem mnemonicParsing="false" text="Ludzie" />
-                              <MenuItem mnemonicParsing="false" text="Państwa" />
-                              <MenuItem mnemonicParsing="false" text="Waluty" />
-                              <MenuItem mnemonicParsing="false" text="Kantor" />
-                              <MenuItem mnemonicParsing="false" text="Transakcje" />
-                              <MenuItem mnemonicParsing="false" text="AkcjeInwestora" />
-                              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                        </items>
-                      </Menu>
-                    </menus>
-                  </MenuBar>
-                  <TableView fx:id="TablicaEncja" layoutY="26.0" prefHeight="345.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
+                  <TableView fx:id="TablicaEncja" layoutY="67.0" prefHeight="345.0" prefWidth="600.0" AnchorPane.bottomAnchor="-41.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="67.0" />
+                  <ComboBox fx:id="comboBox_relacje" layoutX="14.0" layoutY="14.0" prefHeight="39.0" prefWidth="160.0" />
+                  <TextField fx:id="textField_find" layoutX="321.0" layoutY="14.0" prefHeight="39.0" prefWidth="357.0" AnchorPane.rightAnchor="10.0" />
                </children></AnchorPane>
       </content>
     </Tab>

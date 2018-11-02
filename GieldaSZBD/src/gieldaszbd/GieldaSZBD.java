@@ -40,10 +40,10 @@ public class GieldaSZBD extends Application {
     public static void main(String[] args) {
 
         Properties connectionProps = new Properties();
-        connectionProps.put("user", "inf131851");
-        connectionProps.put("password", "inf131851");
+        connectionProps.put("user", "homeuser");
+        connectionProps.put("password", "password");
         try {
-            conn = DriverManager.getConnection("jdbc:oracle:thin:@//admlab2.cs.put.poznan.pl:1521/" + "dblab02_students.cs.put.poznan.pl", connectionProps);
+            conn = DriverManager.getConnection("jdbc:oracle:thin:hr/hr@localhost:1521/XE", connectionProps);
             System.out.println("Połączono z bazą danych");
         } catch (SQLException ex) {
             Logger.getLogger(GieldaSZBD.class.getName()).log(Level.SEVERE, "nie udało się połączyć z bazą danych", ex);
