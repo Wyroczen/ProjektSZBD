@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
@@ -13,16 +14,23 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" snapToPixel="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
   <tabs>
     <Tab text="Baza">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <AnchorPane fx:id="anchorPane_1" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="TablicaEncja" layoutY="67.0" prefHeight="345.0" prefWidth="600.0" AnchorPane.bottomAnchor="-41.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="67.0" />
-                  <ComboBox fx:id="comboBox_relacje" layoutX="14.0" layoutY="14.0" prefHeight="39.0" prefWidth="160.0" />
-                  <TextField fx:id="textField_find" layoutX="321.0" layoutY="14.0" prefHeight="39.0" prefWidth="357.0" AnchorPane.rightAnchor="10.0" />
-               </children></AnchorPane>
+                  <TableView fx:id="TablicaEncja" layoutY="67.0" prefHeight="487.0" prefWidth="500.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="67.0" />
+                  <ComboBox fx:id="comboBox_relacje" layoutX="14.0" layoutY="14.0" prefHeight="39.0" prefWidth="160.0" AnchorPane.leftAnchor="15.0" />
+                  <TextField fx:id="textField_find" layoutX="343.0" layoutY="14.0" prefHeight="39.0" prefWidth="156.0" AnchorPane.rightAnchor="300.0" />
+                  <Label layoutX="515.0" layoutY="106.0" text="Edycja:" AnchorPane.leftAnchor="515.0" />
+                  <VBox fx:id="vbox" layoutX="510.0" layoutY="94.0" prefHeight="408.0" prefWidth="270.0" spacing="5.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="130.0" />
+                  <Button layoutX="513.0" layoutY="50.0" mnemonicParsing="false" prefHeight="39.0" text="Potwierdź" AnchorPane.leftAnchor="513.0" AnchorPane.topAnchor="50.0" />
+                  <Button layoutX="624.0" layoutY="48.0" mnemonicParsing="false" prefHeight="39.0" text="Odrzuć" AnchorPane.leftAnchor="624.0" AnchorPane.topAnchor="50.0" />
+                  <Label layoutX="514.0" layoutY="14.0" text="Transakcja:" AnchorPane.leftAnchor="514.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
       </content>
     </Tab>
     <Tab text="Edycja bazy">

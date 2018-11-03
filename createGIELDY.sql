@@ -16,7 +16,7 @@ waluta REFERENCES WALUTY(nazwa_waluty),
 skrot CHAR(3) NOT NULL);
 
 create table RYNKI
-(nazwa_rynku VARCHAR(40) PRIMARY KEY,
+(nazwa_rynku VARCHAR(40 CHAR) PRIMARY KEY,
 waluta REFERENCES WALUTY(nazwa_waluty),
 panstwo REFERENCES PANSTWA(nazwa));
 
@@ -35,7 +35,7 @@ budzet NUMBER (12,2));
 
 create table SPOLKA
 (id_spolki INT PRIMARY KEY,
-nazwa_spolki VARCHAR2(40) NOT NULL UNIQUE,
+nazwa_spolki VARCHAR2(40 CHAR) NOT NULL UNIQUE,
 data_zalozenia DATE DEFAULT SYSDATE,
 budzet NUMBER (12,2) NOT NULL CHECK(budzet >= 0),
 ceo REFERENCES LUDZIE(PESEL));

@@ -110,3 +110,5 @@ pom.xml.releaseBackup
 pom.xml.tag
 *.properties
 *.properties
+*.properties
+*.properties
