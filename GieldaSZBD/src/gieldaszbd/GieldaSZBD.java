@@ -51,6 +51,7 @@ public class GieldaSZBD extends Application {
         }
         launch(args); //Tam gdzie ta linijka tam wyświetli się okno, a reszta wykona się po jego zamknięciu*
         try {
+            conn.rollback();
             conn.close();
             System.out.println("Rozłączono z bazą danych");
         } catch (SQLException ex) {
