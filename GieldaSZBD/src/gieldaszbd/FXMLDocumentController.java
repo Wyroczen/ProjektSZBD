@@ -92,7 +92,7 @@ public class FXMLDocumentController implements Initializable {
                     else if("Spółki".equals(currTable)) editSpolki(newSelected);
                     else if("Akcje".equals(currTable)) editAkcje(newSelected);
                     else if("Waluty".equals(currTable)) editWaluty(newSelected);
-                    else if("Państwa".equals(currTable)){}
+                    else if("Państwa".equals(currTable))editPanstwa(newSelected);
                     else if("Rynki".equals(currTable)){}
                 }           
                 catch (SQLException ex) {
@@ -490,5 +490,54 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(twartosc);
         vbox.getChildren().add(button1);
     }
-
+    private void editPanstwa(ObservableList<String> selected) throws SQLException{
+        Label skrot = new Label();
+        skrot.setText("Skrót");
+        TextField tskrot = new TextField();
+        tskrot.setText(selected.get(2));
+        
+        Label waluta = new Label();
+        waluta.setText("Waluta");
+        ObservableList<String> waluty = FXCollections.observableArrayList();
+        ComboBox cbwaluty = new ComboBox();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmt.executeQuery("select nazwa_waluty from waluty");
+        while(rs.next()) {
+            waluty.add(rs.getString(1));
+        }
+        rs.close();
+        stmt.close();
+        cbwaluty.setItems(waluty);
+        cbwaluty.getSelectionModel().select(selected.get(1));
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet rs = stmt.executeQuery(
+                            "update panstwa set waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString() +
+                            "', skrot='"+
+                            tskrot.getText() +
+                            "' where nazwa='"+
+                            selected.get(0) + "'");
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(skrot);
+        vbox.getChildren().add(tskrot);
+        vbox.getChildren().add(waluta);
+        vbox.getChildren().add(cbwaluty);
+        vbox.getChildren().add(button1);
+    }
+   
 }
