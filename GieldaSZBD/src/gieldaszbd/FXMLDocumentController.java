@@ -24,7 +24,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -45,6 +44,11 @@ public class FXMLDocumentController implements Initializable {
     private ObservableList <ObservableList> dataTabelki;
     private ObservableList <String> relacje;
     private String currTable;
+    
+    @FXML
+    private ComboBox comboBox_new;
+    @FXML
+    private VBox vbox2;
     //private void handleButtonAction(ActionEvent event) {
     //    System.out.println("You clicked me fucker oh click me please daddy!");
     //    label.setText("Hello World!");
@@ -77,6 +81,31 @@ public class FXMLDocumentController implements Initializable {
             search(newValue);
         });   
         
+        comboBox_new.setItems(relacje);        
+        //listener drugiego comboboxa
+        comboBox_new.valueProperty().addListener(new ChangeListener<String>() {
+            @Override public void changed(ObservableValue ov, String t, String t1) {
+                if(t1 == null){
+                
+                }
+                else{
+                    try{
+                        if("Ludzie".equals(t1)) addLudzie();
+                        else if("Inwestorzy".equals(t1)) ;
+                        else if("Spółki".equals(t1)) ;
+                        else if("Akcje".equals(t1)) ;
+                        else if("Waluty".equals(t1)) ;
+                        else if("Państwa".equals(t1));
+                        else if("Rynki".equals(t1)) ;
+                    }           
+                    catch (SQLException ex) {
+                        System.out.println("Bład wykonania polecenia" + ex.toString());
+                    } 
+                }
+            }
+        });
+        comboBox_new.getSelectionModel().select(0);
+        
         //listener wybranego wiersza w tabeli
         TablicaEncja.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             ObservableList <String> newSelected = (ObservableList <String>)newSelection;
@@ -93,7 +122,7 @@ public class FXMLDocumentController implements Initializable {
                     else if("Akcje".equals(currTable)) editAkcje(newSelected);
                     else if("Waluty".equals(currTable)) editWaluty(newSelected);
                     else if("Państwa".equals(currTable))editPanstwa(newSelected);
-                    else if("Rynki".equals(currTable)){}
+                    else if("Rynki".equals(currTable)) editRynki(newSelected);
                 }           
                 catch (SQLException ex) {
                     System.out.println("Bład wykonania polecenia" + ex.toString());
@@ -110,7 +139,7 @@ public class FXMLDocumentController implements Initializable {
         if("Ludzie".equals(rel)) rs = stmt.executeQuery("select * from ludzie" + find);
         if("Inwestorzy".equals(rel)) rs = stmt.executeQuery("select * from inwestorzy" + find);
         if("Spółki".equals(rel)) rs = stmt.executeQuery("select id_spolki, nazwa_spolki, to_char(data_zalozenia,'YYYY-MM-DD') as Data_założenia, budzet, ceo from spolka" + find);
-        if("Akcje".equals(rel)) rs = stmt.executeQuery("select * from akcja" + find);
+        if("Akcje".equals(rel)) rs = stmt.executeQuery("select id_akcji, nazwa_rynku as RYNEK, wartosc from akcja JOIN rynki on id_gieldy=id_rynku" + find);
         if("Waluty".equals(rel)) rs = stmt.executeQuery("select * from waluty" + find);
         if("Państwa".equals(rel)) rs = stmt.executeQuery("select * from panstwa" + find);
         if("Rynki".equals(rel)) rs = stmt.executeQuery("select * from rynki" + find);
@@ -191,11 +220,6 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     private void editLudzie(ObservableList<String> selected) throws SQLException{
-                    Label pesel = new Label();
-                    pesel.setText("PESEL");
-                    TextField tpesel = new TextField();
-                    tpesel.setText(selected.get(0));
-                    
                     Label imie = new Label();
                     imie.setText("Imię");
                     TextField timie = new TextField();
@@ -228,9 +252,7 @@ public class FXMLDocumentController implements Initializable {
                             try {
                                 Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                                 ResultSet rs = stmt.executeQuery(
-                                        "update ludzie set pesel="+
-                                        tpesel.getText()+
-                                        ", imie='"+
+                                        "update ludzie set imie='"+
                                         timie.getText()+
                                         "', nazwisko='"+
                                         tnazwisko.getText()+
@@ -247,8 +269,6 @@ public class FXMLDocumentController implements Initializable {
                             
                         }
                     });
-                    vbox.getChildren().add(pesel);
-                    vbox.getChildren().add(tpesel);
                     vbox.getChildren().add(imie);
                     vbox.getChildren().add(timie);
                     vbox.getChildren().add(nazwisko);
@@ -325,11 +345,6 @@ public class FXMLDocumentController implements Initializable {
                     vbox.getChildren().add(button1);
     }//to do
     private void editSpolki(ObservableList<String> selected) throws SQLException{
-                    Label idspolki = new Label();
-                    idspolki.setText("ID Spółki");
-                    TextField tid = new TextField();
-                    tid.setText(selected.get(0));
-                    
                     Label nazwa = new Label();
                     nazwa.setText("Nazwa");
                     TextField tnazwa = new TextField();
@@ -367,9 +382,7 @@ public class FXMLDocumentController implements Initializable {
                             try {
                                 Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                                 ResultSet rs = stmt.executeQuery(
-                                        "update spolka set id_spolki="+
-                                        tid.getText()+
-                                        ", nazwa_spolki='"+
+                                        "update spolka set nazwa_spolki='"+
                                         tnazwa.getText()+
                                         "', data_zalozenia=DATE '"+
                                         tdata.getText()+
@@ -388,8 +401,6 @@ public class FXMLDocumentController implements Initializable {
                             
                         }
                     });
-                    vbox.getChildren().add(idspolki);
-                    vbox.getChildren().add(tid);
                     vbox.getChildren().add(nazwa);
                     vbox.getChildren().add(tnazwa);
                     vbox.getChildren().add(data);
@@ -401,7 +412,6 @@ public class FXMLDocumentController implements Initializable {
                     vbox.getChildren().add(button1);
     }
     private void editAkcje(ObservableList<String> selected) throws SQLException{
-        
         Label rynek = new Label();
         rynek.setText("Rynek");
         ObservableList<String> rynki = FXCollections.observableArrayList();
@@ -413,13 +423,23 @@ public class FXMLDocumentController implements Initializable {
         }
         rs.close();
         stmt.close();
+        
         cbrynki.setItems(rynki);
-        cbrynki.getSelectionModel().select(selected.get(1));
+        Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs2 = stmt2.executeQuery("select nazwa_rynku from rynki where id_rynku="+selected.get(1));
+        rs2.next();
+        String nazwaRynku = rs2.getString(1);
+        cbrynki.getSelectionModel().select(nazwaRynku);
+        rs2.close();
+        stmt2.close();
+        
         
         Label wartosc = new Label();
         wartosc.setText("Wartość");
         TextField twartosc = new TextField();
         twartosc.setText(selected.get(2));
+        
+        
         
         Button button1 = new Button();
         button1.setText("Zapisz");
@@ -429,9 +449,11 @@ public class FXMLDocumentController implements Initializable {
                 try {
                     Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                     ResultSet rs = stmt.executeQuery(
-                            "update akcja set id_gieldy='"+
-                            cbrynki.getSelectionModel().getSelectedItem().toString()+
-                            "', wartosc="+
+                            "update akcja set id_gieldy=" +
+                                    "(SELECT id_rynku " +
+                                    "FROM rynki " + 
+                                    "WHERE nazwa_rynku='" + cbrynki.getSelectionModel().getSelectedItem().toString()+ 
+                            "')" + ", wartosc="+
                             twartosc.getText()+
                             " where id_akcji="+
                             selected.get(0));
@@ -450,12 +472,7 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(twartosc);
         vbox.getChildren().add(button1);
     }
-    private void editWaluty(ObservableList<String> selected) throws SQLException{
-        Label nazwa = new Label();
-        nazwa.setText("Nazwa waluty");
-        TextField tnazwa = new TextField();
-        tnazwa.setText(selected.get(0));
-        
+    private void editWaluty(ObservableList<String> selected) throws SQLException{        
         Label wartosc = new Label();
         wartosc.setText("Wartość");
         TextField twartosc = new TextField();
@@ -469,9 +486,7 @@ public class FXMLDocumentController implements Initializable {
                 try {
                     Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                     ResultSet rs = stmt.executeQuery(
-                            "update waluty set nazwa_waluty='"+
-                            tnazwa.getText()+
-                            "', wartosc="+
+                            "update waluty set wartosc="+
                             twartosc.getText()+
                             " where nazwa_waluty='"+
                             selected.get(0) + "'");
@@ -484,8 +499,6 @@ public class FXMLDocumentController implements Initializable {
                 
             }
         });
-        vbox.getChildren().add(nazwa);
-        vbox.getChildren().add(tnazwa);
         vbox.getChildren().add(wartosc);
         vbox.getChildren().add(twartosc);
         vbox.getChildren().add(button1);
@@ -539,5 +552,489 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(cbwaluty);
         vbox.getChildren().add(button1);
     }
-   
+    private void editRynki(ObservableList<String> selected) throws SQLException{
+        Label nazwa = new Label();
+        nazwa.setText("Nazwa rynku");
+        TextField tnazwa = new TextField();
+        tnazwa.setText(selected.get(1));
+        
+        Label waluta = new Label();
+        waluta.setText("Waluta");
+        ObservableList<String> waluty = FXCollections.observableArrayList();
+        ComboBox cbwaluty = new ComboBox();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmt.executeQuery("select nazwa_waluty from waluty");
+        while(rs.next()) {
+            waluty.add(rs.getString(1));
+        }
+        rs.close();
+        stmt.close();
+        cbwaluty.setItems(waluty);
+        cbwaluty.getSelectionModel().select(selected.get(2));
+        
+        Label kraj = new Label();
+        kraj.setText("Państwo");
+        ObservableList<String> panstwa = FXCollections.observableArrayList();
+        ComboBox cbkraj = new ComboBox();
+        Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs2 = stmt2.executeQuery("select nazwa from panstwa");
+        while(rs2.next()) {
+            panstwa.add(rs2.getString(1));
+        }
+        rs2.close();
+        stmt2.close();
+        cbkraj.setItems(panstwa);
+        cbkraj.getSelectionModel().select(selected.get(3));
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    System.out.println("update rynki set nazwa_rynku='"+
+                            tnazwa.getText()+
+                            "', waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString()+
+                            "', panstwo='"+
+                            cbkraj.getSelectionModel().getSelectedItem().toString()+
+                            "' where id_rynku="+
+                            selected.get(0));
+                    ResultSet rs = stmt.executeQuery(
+                            "update rynki set nazwa_rynku='"+
+                            tnazwa.getText()+
+                            "', waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString()+
+                            "', panstwo='"+
+                            cbkraj.getSelectionModel().getSelectedItem().toString()+
+                            "' where id_rynku="+
+                            selected.get(0));
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(nazwa);
+        vbox.getChildren().add(tnazwa);
+        vbox.getChildren().add(waluta);
+        vbox.getChildren().add(cbwaluty);
+        vbox.getChildren().add(kraj);
+        vbox.getChildren().add(cbkraj);
+        vbox.getChildren().add(button1);
+    }
+
+    private void addLudzie() throws SQLException{
+                    Label pesel = new Label();
+                    pesel.setText("Pesel");
+                    TextField tpesel = new TextField();
+                    
+                    Label imie = new Label();
+                    imie.setText("Imię");
+                    TextField timie = new TextField();
+                    
+                    Label nazwisko = new Label();
+                    nazwisko.setText("Nazwisko");
+                    TextField tnazwisko = new TextField();
+                    
+                    Label kraj = new Label();
+                    kraj.setText("Narodowość");
+                    ObservableList<String> panstwa = FXCollections.observableArrayList();
+                    ComboBox cbkraj = new ComboBox();
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    ResultSet rs = stmt.executeQuery("select nazwa from panstwa");
+                    while(rs.next()) {
+                        panstwa.add(rs.getString(1));
+                    }
+                    rs.close();
+                    stmt.close();
+                    cbkraj.setItems(panstwa);
+                    cbkraj.getSelectionModel().select(0);
+                    
+                    Button button1 = new Button();
+                    button1.setText("Dodaj");
+                    button1.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override 
+                        public void handle(ActionEvent e) {
+                            try {
+                                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                                ResultSet rs = stmt.executeQuery(
+                                        "insert into ludzie VALUES(" + tpesel.getText() +
+                                        ",'" + timie.getText()+
+                                        "','" + tnazwisko.getText()+
+                                        "','" + cbkraj.getSelectionModel().getSelectedItem().toString()+
+                                        "')");
+                                stmt.close();
+                                rs.close();
+                                search(textField_find.getText());
+                            } catch (SQLException ex) {
+                                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
+                        }
+                    });
+                    vbox2.getChildren().add(pesel);
+                    vbox2.getChildren().add(tpesel);
+                    vbox2.getChildren().add(imie);
+                    vbox2.getChildren().add(timie);
+                    vbox2.getChildren().add(nazwisko);
+                    vbox2.getChildren().add(tnazwisko);
+                    vbox2.getChildren().add(kraj);
+                    vbox2.getChildren().add(cbkraj);
+                    vbox2.getChildren().add(button1);
+    }
+    private void addInwestorzy(ObservableList<String> selected) throws SQLException{
+                    Label pesel = new Label();
+                    pesel.setText("PESEL");
+                    TextField tpesel = new TextField();
+                    tpesel.setText(selected.get(0));
+                    
+                    Label imie = new Label();
+                    imie.setText("Imię");
+                    TextField timie = new TextField();
+                    timie.setText(selected.get(1));
+                    
+                    Label nazwisko = new Label();
+                    nazwisko.setText("Nazwisko");
+                    TextField tnazwisko = new TextField();
+                    tnazwisko.setText(selected.get(2));
+                    
+                    Label kraj = new Label();
+                    kraj.setText("Narodowość");
+                    ObservableList<String> panstwa = FXCollections.observableArrayList();
+                    ComboBox cbkraj = new ComboBox();
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    ResultSet rs = stmt.executeQuery("select nazwa from panstwa");
+                    while(rs.next()) {
+                        panstwa.add(rs.getString(1));
+                    }
+                    rs.close();
+                    stmt.close();
+                    cbkraj.setItems(panstwa);
+                    cbkraj.getSelectionModel().select(selected.get(3));
+                    
+                    Button button1 = new Button();
+                    button1.setText("Zapisz");
+                    button1.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override 
+                        public void handle(ActionEvent e) {
+                            try {
+                                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                                ResultSet rs = stmt.executeQuery(
+                                        "update inwestorzy set pesel="+
+                                        tpesel.getText()+
+                                        ", imie='"+
+                                        timie.getText()+
+                                        "', nazwisko='"+
+                                        tnazwisko.getText()+
+                                        "', narodowosc='"+
+                                        cbkraj.getSelectionModel().getSelectedItem().toString()+
+                                        "' where pesel="+
+                                        selected.get(0));
+                                stmt.close();
+                                rs.close();
+                                search(textField_find.getText());
+                            } catch (SQLException ex) {
+                                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
+                        }
+                    });
+                    vbox.getChildren().add(pesel);
+                    vbox.getChildren().add(tpesel);
+                    vbox.getChildren().add(imie);
+                    vbox.getChildren().add(timie);
+                    vbox.getChildren().add(nazwisko);
+                    vbox.getChildren().add(tnazwisko);
+                    vbox.getChildren().add(kraj);
+                    vbox.getChildren().add(cbkraj);
+                    vbox.getChildren().add(button1);
+    }//to do
+    private void addSpolki(ObservableList<String> selected) throws SQLException{
+                    Label nazwa = new Label();
+                    nazwa.setText("Nazwa");
+                    TextField tnazwa = new TextField();
+                    tnazwa.setText(selected.get(1));
+                    
+                    Label data = new Label();
+                    data.setText("Data założenia");
+                    TextField tdata = new TextField();
+                    tdata.setText(selected.get(2));
+                    
+                    Label budzet = new Label();
+                    budzet.setText("Budzet");
+                    TextField tbudzet = new TextField();
+                    tbudzet.setText(selected.get(3));
+                    
+                    Label ceo = new Label();
+                    ceo.setText("CEO");
+                    ObservableList<String> ludzie = FXCollections.observableArrayList();
+                    ComboBox cbludzie = new ComboBox();
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    ResultSet rs = stmt.executeQuery("select pesel from ludzie");
+                    while(rs.next()) {
+                        ludzie.add(rs.getString(1));
+                    }
+                    rs.close();
+                    stmt.close();
+                    cbludzie.setItems(ludzie);
+                    cbludzie.getSelectionModel().select(selected.get(4));
+                    
+                    Button button1 = new Button();
+                    button1.setText("Zapisz");
+                    button1.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override 
+                        public void handle(ActionEvent e) {
+                            try {
+                                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                                ResultSet rs = stmt.executeQuery(
+                                        "update spolka set nazwa_spolki='"+
+                                        tnazwa.getText()+
+                                        "', data_zalozenia=DATE '"+
+                                        tdata.getText()+
+                                        "', budzet="+
+                                        tbudzet.getText()+
+                                        ", ceo='"+
+                                        cbludzie.getSelectionModel().getSelectedItem().toString()+
+                                        "' where id_spolki="+
+                                        selected.get(0));
+                                stmt.close();
+                                rs.close();
+                                search(textField_find.getText());
+                            } catch (SQLException ex) {
+                                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
+                        }
+                    });
+                    vbox.getChildren().add(nazwa);
+                    vbox.getChildren().add(tnazwa);
+                    vbox.getChildren().add(data);
+                    vbox.getChildren().add(tdata);
+                    vbox.getChildren().add(budzet);
+                    vbox.getChildren().add(tbudzet);
+                    vbox.getChildren().add(ceo);
+                    vbox.getChildren().add(cbludzie);
+                    vbox.getChildren().add(button1);
+    }
+    private void addAkcje(ObservableList<String> selected) throws SQLException{
+        Label rynek = new Label();
+        rynek.setText("Rynek");
+        ObservableList<String> rynki = FXCollections.observableArrayList();
+        ComboBox cbrynki = new ComboBox();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmt.executeQuery("select nazwa_rynku from rynki");
+        while(rs.next()) {
+            rynki.add(rs.getString(1));
+        }
+        rs.close();
+        stmt.close();
+        
+        cbrynki.setItems(rynki);
+        Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs2 = stmt2.executeQuery("select nazwa_rynku from rynki where id_rynku="+selected.get(1));
+        rs2.next();
+        String nazwaRynku = rs2.getString(1);
+        cbrynki.getSelectionModel().select(nazwaRynku);
+        rs2.close();
+        stmt2.close();
+        
+        
+        Label wartosc = new Label();
+        wartosc.setText("Wartość");
+        TextField twartosc = new TextField();
+        twartosc.setText(selected.get(2));
+        
+        
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet rs = stmt.executeQuery(
+                            "update akcja set id_gieldy=" +
+                                    "(SELECT id_rynku " +
+                                    "FROM rynki " + 
+                                    "WHERE nazwa_rynku='" + cbrynki.getSelectionModel().getSelectedItem().toString()+ 
+                            "')" + ", wartosc="+
+                            twartosc.getText()+
+                            " where id_akcji="+
+                            selected.get(0));
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(rynek);
+        vbox.getChildren().add(cbrynki);
+        vbox.getChildren().add(wartosc);
+        vbox.getChildren().add(twartosc);
+        vbox.getChildren().add(button1);
+    }
+    private void addWaluty(ObservableList<String> selected) throws SQLException{        
+        Label wartosc = new Label();
+        wartosc.setText("Wartość");
+        TextField twartosc = new TextField();
+        twartosc.setText(selected.get(1));
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet rs = stmt.executeQuery(
+                            "update waluty set wartosc="+
+                            twartosc.getText()+
+                            " where nazwa_waluty='"+
+                            selected.get(0) + "'");
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(wartosc);
+        vbox.getChildren().add(twartosc);
+        vbox.getChildren().add(button1);
+    }
+    private void addPanstwa(ObservableList<String> selected) throws SQLException{
+        Label skrot = new Label();
+        skrot.setText("Skrót");
+        TextField tskrot = new TextField();
+        tskrot.setText(selected.get(2));
+        
+        Label waluta = new Label();
+        waluta.setText("Waluta");
+        ObservableList<String> waluty = FXCollections.observableArrayList();
+        ComboBox cbwaluty = new ComboBox();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmt.executeQuery("select nazwa_waluty from waluty");
+        while(rs.next()) {
+            waluty.add(rs.getString(1));
+        }
+        rs.close();
+        stmt.close();
+        cbwaluty.setItems(waluty);
+        cbwaluty.getSelectionModel().select(selected.get(1));
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    ResultSet rs = stmt.executeQuery(
+                            "update panstwa set waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString() +
+                            "', skrot='"+
+                            tskrot.getText() +
+                            "' where nazwa='"+
+                            selected.get(0) + "'");
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(skrot);
+        vbox.getChildren().add(tskrot);
+        vbox.getChildren().add(waluta);
+        vbox.getChildren().add(cbwaluty);
+        vbox.getChildren().add(button1);
+    }
+    private void addRynki(ObservableList<String> selected) throws SQLException{
+        Label nazwa = new Label();
+        nazwa.setText("Nazwa rynku");
+        TextField tnazwa = new TextField();
+        tnazwa.setText(selected.get(1));
+        
+        Label waluta = new Label();
+        waluta.setText("Waluta");
+        ObservableList<String> waluty = FXCollections.observableArrayList();
+        ComboBox cbwaluty = new ComboBox();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = stmt.executeQuery("select nazwa_waluty from waluty");
+        while(rs.next()) {
+            waluty.add(rs.getString(1));
+        }
+        rs.close();
+        stmt.close();
+        cbwaluty.setItems(waluty);
+        cbwaluty.getSelectionModel().select(selected.get(2));
+        
+        Label kraj = new Label();
+        kraj.setText("Państwo");
+        ObservableList<String> panstwa = FXCollections.observableArrayList();
+        ComboBox cbkraj = new ComboBox();
+        Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs2 = stmt2.executeQuery("select nazwa from panstwa");
+        while(rs2.next()) {
+            panstwa.add(rs2.getString(1));
+        }
+        rs2.close();
+        stmt2.close();
+        cbkraj.setItems(panstwa);
+        cbkraj.getSelectionModel().select(selected.get(3));
+        
+        Button button1 = new Button();
+        button1.setText("Zapisz");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override 
+            public void handle(ActionEvent e) {
+                try {
+                    Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    System.out.println("update rynki set nazwa_rynku='"+
+                            tnazwa.getText()+
+                            "', waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString()+
+                            "', panstwo='"+
+                            cbkraj.getSelectionModel().getSelectedItem().toString()+
+                            "' where id_rynku="+
+                            selected.get(0));
+                    ResultSet rs = stmt.executeQuery(
+                            "update rynki set nazwa_rynku='"+
+                            tnazwa.getText()+
+                            "', waluta='"+
+                            cbwaluty.getSelectionModel().getSelectedItem().toString()+
+                            "', panstwo='"+
+                            cbkraj.getSelectionModel().getSelectedItem().toString()+
+                            "' where id_rynku="+
+                            selected.get(0));
+                    stmt.close();
+                    rs.close();
+                    search(textField_find.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        vbox.getChildren().add(nazwa);
+        vbox.getChildren().add(tnazwa);
+        vbox.getChildren().add(waluta);
+        vbox.getChildren().add(cbwaluty);
+        vbox.getChildren().add(kraj);
+        vbox.getChildren().add(cbkraj);
+        vbox.getChildren().add(button1);
+    }    
 }

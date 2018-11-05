@@ -7,7 +7,8 @@ DROP TABLE LUDZIE cascade constraints;
 DROP TABLE INWESTORZY cascade constraints;
 
 create table WALUTY
-(nazwa_waluty VARCHAR2(15 CHAR) PRIMARY KEY,
+(id_waluty INTEGER PRIMARY KEY,
+nazwa_waluty VARCHAR2(15 CHAR) UNIQUE,
 wartosc NUMBER(6,2));
 
 create table PANSTWA
@@ -16,12 +17,14 @@ waluta REFERENCES WALUTY(nazwa_waluty),
 skrot CHAR(3) NOT NULL);
 
 create table RYNKI
-(nazwa_rynku VARCHAR(40 CHAR) PRIMARY KEY,
+(id_rynku INTEGER PRIMARY KEY,
+nazwa_rynku VARCHAR2(40 CHAR),
 waluta REFERENCES WALUTY(nazwa_waluty),
 panstwo REFERENCES PANSTWA(nazwa));
 
 create table LUDZIE
-(pesel NUMBER(11) PRIMARY KEY,
+(id_ludzie INTEGER PRIMARY KEY,
+pesel NUMBER(11) UNIQUE,
 imie VARCHAR(20),
 nazwisko VARCHAR(20),
 narodowosc REFERENCES PANSTWA(nazwa));
