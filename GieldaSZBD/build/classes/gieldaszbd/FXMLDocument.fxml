@@ -26,8 +26,8 @@
                   <VBox fx:id="vbox" layoutX="510.0" layoutY="94.0" prefHeight="408.0" prefWidth="270.0" spacing="5.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="130.0" />
                   <Button layoutX="513.0" layoutY="50.0" mnemonicParsing="false" prefHeight="39.0" text="Potwierdź" AnchorPane.rightAnchor="188.0" AnchorPane.topAnchor="50.0" />
                   <Button layoutX="625.0" layoutY="50.0" mnemonicParsing="false" prefHeight="39.0" text="Odrzuć" AnchorPane.rightAnchor="97.0" AnchorPane.topAnchor="50.0" />
-                  <Label layoutX="513.0" layoutY="14.0" text="Zarządzaj transakcją" AnchorPane.rightAnchor="136.0" AnchorPane.topAnchor="15.0" />
-                  <Label layoutX="513.0" layoutY="98.0" text="Edycja" AnchorPane.rightAnchor="239.0" AnchorPane.topAnchor="98.0" />
+                  <Label layoutX="507.0" layoutY="14.0" text="Zarządzaj transakcją" AnchorPane.rightAnchor="131.0" AnchorPane.topAnchor="14.0" />
+                  <Label layoutX="507.0" layoutY="104.0" text="Edycja" AnchorPane.rightAnchor="242.0" AnchorPane.topAnchor="104.0" />
                </children>
             </AnchorPane>
       </content>
@@ -36,9 +36,9 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <VBox fx:id="vbox2" alignment="TOP_CENTER" layoutX="302.0" layoutY="90.0" prefHeight="278.0" prefWidth="209.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="200.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                        <HBox alignment="CENTER" prefHeight="120.0" prefWidth="800.0" spacing="20.0">
                            <children>
                               <Label text="Tabela:" />
                               <ComboBox fx:id="comboBox_new" prefWidth="150.0" />
@@ -46,8 +46,16 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <VBox fx:id="vbox2" alignment="TOP_CENTER" layoutX="302.0" layoutY="79.0" prefHeight="477.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="90.0">
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
+                  </VBox>
                </children></AnchorPane>
       </content>
     </Tab>
   </tabs>
+   <effect>
+      <InnerShadow color="#5a4b90" height="5.0" radius="1.75" width="4.0" />
+   </effect>
 </TabPane>

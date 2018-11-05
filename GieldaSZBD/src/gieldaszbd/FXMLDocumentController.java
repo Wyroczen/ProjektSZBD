@@ -5,6 +5,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -26,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 /**
  *
@@ -85,14 +89,15 @@ public class FXMLDocumentController implements Initializable {
         //listener drugiego comboboxa
         comboBox_new.valueProperty().addListener(new ChangeListener<String>() {
             @Override public void changed(ObservableValue ov, String t, String t1) {
+                vbox2.getChildren().clear();
                 if(t1 == null){
-                
+                 
                 }
                 else{
                     try{
                         if("Ludzie".equals(t1)) addLudzie();
                         else if("Inwestorzy".equals(t1)) ;
-                        else if("Spółki".equals(t1)) ;
+                        else if("Spółki".equals(t1)) addSpolki();
                         else if("Akcje".equals(t1)) ;
                         else if("Waluty".equals(t1)) ;
                         else if("Państwa".equals(t1));
@@ -670,7 +675,7 @@ public class FXMLDocumentController implements Initializable {
                                         "')");
                                 stmt.close();
                                 rs.close();
-                                search(textField_find.getText());
+                                search(null);
                             } catch (SQLException ex) {
                                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -754,21 +759,42 @@ public class FXMLDocumentController implements Initializable {
                     vbox.getChildren().add(cbkraj);
                     vbox.getChildren().add(button1);
     }//to do
-    private void addSpolki(ObservableList<String> selected) throws SQLException{
+    private void addSpolki() throws SQLException{
                     Label nazwa = new Label();
                     nazwa.setText("Nazwa");
                     TextField tnazwa = new TextField();
-                    tnazwa.setText(selected.get(1));
                     
                     Label data = new Label();
-                    data.setText("Data założenia");
-                    TextField tdata = new TextField();
-                    tdata.setText(selected.get(2));
+                    data.setText("Data założenia (YYYY-MM-DD)");
+                    DatePicker tdata = new DatePicker();
+                    tdata.setConverter(new StringConverter<LocalDate>() {
+                        String pattern = "yyyy-MM-dd";
+                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+                        {
+                            tdata.setPromptText(pattern.toLowerCase());
+                        }
+
+                        @Override public String toString(LocalDate date) {
+                            if (date != null) {
+                                return dateFormatter.format(date);
+                            } else {
+                                return "";
+                            }
+                        }
+
+                        @Override public LocalDate fromString(String string) {
+                            if (string != null && !string.isEmpty()) {
+                                return LocalDate.parse(string, dateFormatter);
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
                     
                     Label budzet = new Label();
                     budzet.setText("Budzet");
                     TextField tbudzet = new TextField();
-                    tbudzet.setText(selected.get(3));
                     
                     Label ceo = new Label();
                     ceo.setText("CEO");
@@ -782,7 +808,7 @@ public class FXMLDocumentController implements Initializable {
                     rs.close();
                     stmt.close();
                     cbludzie.setItems(ludzie);
-                    cbludzie.getSelectionModel().select(selected.get(4));
+                    cbludzie.getSelectionModel().select(0);
                     
                     Button button1 = new Button();
                     button1.setText("Zapisz");
@@ -792,34 +818,34 @@ public class FXMLDocumentController implements Initializable {
                             try {
                                 Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                                 ResultSet rs = stmt.executeQuery(
-                                        "update spolka set nazwa_spolki='"+
+                                        
+                                        "insert into spolka(nazwa_spolki, data_zalozenia, budzet, ceo) values('"+
                                         tnazwa.getText()+
-                                        "', data_zalozenia=DATE '"+
-                                        tdata.getText()+
-                                        "', budzet="+
+                                        "', DATE '"+
+                                        tdata.getValue().toString()+
+                                        "', "+
                                         tbudzet.getText()+
-                                        ", ceo='"+
+                                        ", '"+
                                         cbludzie.getSelectionModel().getSelectedItem().toString()+
-                                        "' where id_spolki="+
-                                        selected.get(0));
+                                        "')");
                                 stmt.close();
                                 rs.close();
-                                search(textField_find.getText());
+                                search(null);
                             } catch (SQLException ex) {
                                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             
                         }
                     });
-                    vbox.getChildren().add(nazwa);
-                    vbox.getChildren().add(tnazwa);
-                    vbox.getChildren().add(data);
-                    vbox.getChildren().add(tdata);
-                    vbox.getChildren().add(budzet);
-                    vbox.getChildren().add(tbudzet);
-                    vbox.getChildren().add(ceo);
-                    vbox.getChildren().add(cbludzie);
-                    vbox.getChildren().add(button1);
+                    vbox2.getChildren().add(nazwa);
+                    vbox2.getChildren().add(tnazwa);
+                    vbox2.getChildren().add(data);
+                    vbox2.getChildren().add(tdata);
+                    vbox2.getChildren().add(budzet);
+                    vbox2.getChildren().add(tbudzet);
+                    vbox2.getChildren().add(ceo);
+                    vbox2.getChildren().add(cbludzie);
+                    vbox2.getChildren().add(button1);
     }
     private void addAkcje(ObservableList<String> selected) throws SQLException{
         Label rynek = new Label();
