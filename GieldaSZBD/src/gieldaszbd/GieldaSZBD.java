@@ -29,6 +29,7 @@ public class GieldaSZBD extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
+        stage.setTitle("Giełdy");
         
         stage.setScene(scene);
         stage.show();
@@ -40,10 +41,10 @@ public class GieldaSZBD extends Application {
     public static void main(String[] args) {
 
         Properties connectionProps = new Properties();
-        connectionProps.put("user", "homeuser");
-        connectionProps.put("password", "password");
+        connectionProps.put("user", "inf132306");
+        connectionProps.put("password", "inf132306");
         try {
-            conn = DriverManager.getConnection("jdbc:oracle:thin:hr/hr@localhost:1521/XE", connectionProps);
+            conn = DriverManager.getConnection("jdbc:oracle:thin:hr/hr@//admlab2.cs.put.poznan.pl:1521/dblab02_students.cs.put.poznan.pl", connectionProps);
             System.out.println("Połączono z bazą danych");
         } catch (SQLException ex) {
             Logger.getLogger(GieldaSZBD.class.getName()).log(Level.SEVERE, "nie udało się połączyć z bazą danych", ex);

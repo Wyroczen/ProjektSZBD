@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" snapToPixel="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" snapToPixel="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
   <tabs>
     <Tab text="Baza danych">
       <content>
@@ -32,6 +33,35 @@
             </AnchorPane>
       </content>
     </Tab>
+      <Tab text="Transakcje">
+         <content>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="transakcje" prefHeight="633.0" prefWidth="733.0" />
+                  <VBox alignment="CENTER" prefHeight="659.0" prefWidth="471.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="button_transakcja" mnemonicParsing="false" text="Nowa transakcja" />
+                        <Label alignment="BOTTOM_CENTER" contentDisplay="TOP" prefHeight="43.0" prefWidth="216.0" text="Przelicz akcje inwestora:" />
+                        <HBox alignment="CENTER" prefHeight="58.0" prefWidth="469.0" spacing="10.0">
+                           <children>
+                              <Label text="Inwestor:" />
+                              <ComboBox fx:id="cb_inwestor" prefWidth="150.0" />
+                              <Label text="Akcje:" />
+                              <ComboBox fx:id="cb_akcje" prefWidth="150.0" />
+                           </children>
+                        </HBox>
+                        <Button fx:id="button_przelicz" mnemonicParsing="false" text="Przelicz" />
+                        <Label fx:id="l_wynik" alignment="CENTER" contentDisplay="RIGHT" prefHeight="71.0" prefWidth="296.0" textAlignment="CENTER" wrapText="true">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </content>
+      </Tab>
     <Tab text="Dodawanie nowych obiektów">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -46,7 +76,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="vbox2" alignment="TOP_CENTER" layoutX="302.0" layoutY="79.0" prefHeight="477.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="90.0">
+                  <VBox fx:id="vbox2" alignment="TOP_CENTER" layoutX="302.0" layoutY="79.0" prefHeight="569.0" prefWidth="833.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="90.0">
                      <padding>
                         <Insets right="30.0" />
                      </padding>
@@ -54,6 +84,27 @@
                </children></AnchorPane>
       </content>
     </Tab>
+      <Tab closable="false" text="Kantor">
+         <content>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="45.0" prefWidth="800.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="n_ilosc" prefHeight="37.0" prefWidth="96.0" />
+                        <ComboBox fx:id="wal1" prefHeight="37.0" prefWidth="110.0" />
+                        <Label text="DO" />
+                        <ComboBox fx:id="wal2" prefWidth="110.0" />
+                     </children>
+                  </HBox>
+                  <Button fx:id="oblicz" mnemonicParsing="false" text="Oblicz" />
+                  <Label fx:id="wynik" alignment="CENTER" prefHeight="62.0" prefWidth="390.0">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font></Label>
+               </children>
+            </VBox>
+         </content>
+      </Tab>
   </tabs>
    <effect>
       <InnerShadow color="#5a4b90" height="5.0" radius="1.75" width="4.0" />
