@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" snapToPixel="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gieldaszbd.FXMLDocumentController">
   <tabs>
@@ -88,6 +89,7 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                <children>
                   <Label prefHeight="17.0" prefWidth="356.0" text="Ilość:                      Waluta1:                              Waluta2:" />
+                  <Text fx:id="KantorText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="356.79371309280396" />
                   <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="45.0" prefWidth="800.0" spacing="10.0">
                      <children>
                         <TextField fx:id="n_ilosc" prefHeight="37.0" prefWidth="96.0" />

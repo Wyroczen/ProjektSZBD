@@ -86,6 +86,8 @@ public class FXMLDocumentController implements Initializable {
     private Button oblicz;
     @FXML
     private Label wynik;
+    @FXML
+    private Text KantorText;
 
     //Do sprawdzania poprawności wypełnionych pól:
     public static boolean toLiczba(String strNum) {
@@ -138,7 +140,9 @@ public class FXMLDocumentController implements Initializable {
         rs.close();
         stmt.close();
         wal1.setItems(czlowiek);
+        wal1.getSelectionModel().select(0);
         wal2.setItems(czlowiek);
+        wal2.getSelectionModel().select(0);
     }
 
     @Override
@@ -308,22 +312,30 @@ public class FXMLDocumentController implements Initializable {
                 new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                try {
-                    String waluta1 = wal1.getSelectionModel().getSelectedItem().toString();
-                    String waluta2 = wal2.getSelectionModel().getSelectedItem().toString();
-                    Float filosc = Float.parseFloat(n_ilosc.getText());
-                    CallableStatement stmt;
-                    stmt = conn.prepareCall("{? = call kantor(?, ?, ?)}");
-                    stmt.registerOutParameter(1, Types.FLOAT);
-                    stmt.setString(2, waluta1);
-                    stmt.setString(3, waluta2);
-                    stmt.setFloat(4, filosc);
-                    stmt.execute();
-                    Float output = stmt.getFloat(1);
-                    wynik.setText(filosc.toString() + " " + waluta1 + "=" + output.toString() + " " + waluta2);
-                    stmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                KantorText.setFill(Color.RED);
+                if (!toDouble(n_ilosc.getText())) {
+                    KantorText.setText("Zła liczba!");
+                } else if (Double.parseDouble(n_ilosc.getText()) < 1) {
+                    KantorText.setText("Zła liczba!");
+                } else {
+                    try {
+                        KantorText.setText("");
+                        String waluta1 = wal1.getSelectionModel().getSelectedItem().toString();
+                        String waluta2 = wal2.getSelectionModel().getSelectedItem().toString();
+                        Float filosc = Float.parseFloat(n_ilosc.getText());
+                        CallableStatement stmt;
+                        stmt = conn.prepareCall("{? = call kantor(?, ?, ?)}");
+                        stmt.registerOutParameter(1, Types.FLOAT);
+                        stmt.setString(2, waluta1);
+                        stmt.setString(3, waluta2);
+                        stmt.setFloat(4, filosc);
+                        stmt.execute();
+                        Float output = stmt.getFloat(1);
+                        wynik.setText(filosc.toString() + " " + waluta1 + "=" + output.toString() + " " + waluta2);
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
