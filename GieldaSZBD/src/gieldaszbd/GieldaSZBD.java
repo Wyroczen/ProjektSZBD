@@ -14,6 +14,7 @@ import java.sql.*; //*
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.image.Image;
 /**
  *
  * @author Wyroczen&Socjalis
@@ -29,7 +30,10 @@ public class GieldaSZBD extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
+        //stage.getIcons().add(new Image("C:/Users/wisni/Desktop/Studia/Semestr5/SZBD/ProjektSZBD/GieldaSZBD/src/db.png"));
+        stage.getIcons().add(new Image("https://cdn3.iconfinder.com/data/icons/programming/100/database-512.png"));
         stage.setTitle("Giełdy");
+       
         
         stage.setScene(scene);
         stage.show();
