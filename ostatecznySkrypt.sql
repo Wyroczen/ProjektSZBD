@@ -13,37 +13,37 @@ create table WALUTA
 wartosc NUMBER(6,2) NOT NULL CHECK(wartosc >= 0));
 
 create table KURS
-(waluta1 references WALUTA(nazwa_waluty) NOT NULL,
-waluta2 references WALUTA(nazwa_waluty) NOT NULL,
+(waluta1 references WALUTA(nazwa_waluty) ON DELETE CASCADE NOT NULL,
+waluta2 references WALUTA(nazwa_waluty) ON DELETE CASCADE NOT NULL,
 cena_wymiany NUMBER(6,2) NOT NULL CHECK(cena_wymiany >= 0),
 PRIMARY KEY(waluta1, waluta2));
 
 create table PANSTWO
 (nazwa VARCHAR2(40 CHAR) PRIMARY KEY NOT NULL,
-waluta REFERENCES WALUTA(nazwa_waluty) NOT NULL,
+waluta REFERENCES WALUTA(nazwa_waluty) ON DELETE CASCADE NOT NULL,
 skrot CHAR(3 CHAR) NOT NULL);
 
 create table GIELDA
 (nazwa_gieldy VARCHAR2(40 CHAR) PRIMARY KEY NOT NULL,
-waluta REFERENCES WALUTA(nazwa_waluty) NOT NULL,
-kraj REFERENCES PANSTWO(nazwa) NOT NULL);
+waluta REFERENCES WALUTA(nazwa_waluty) ON DELETE CASCADE NOT NULL,
+kraj REFERENCES PANSTWO(nazwa) ON DELETE CASCADE NOT NULL);
 
 create table CZLOWIEK
 (pesel NUMBER(11) PRIMARY KEY NOT NULL,
 imie VARCHAR2(40 CHAR) NOT NULL,
 nazwisko VARCHAR2(40 CHAR) NOT NULL,
-narodowosc REFERENCES PANSTWO(nazwa) NOT NULL);
+narodowosc REFERENCES PANSTWO(nazwa) ON DELETE CASCADE NOT NULL);
 
 create table SPOLKA
-(id_spolki NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1000 INCREMENT BY 10) PRIMARY KEY NOT NULL,
+(id_spolki NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 10000 INCREMENT BY 1) PRIMARY KEY,
 nazwa_spolki VARCHAR2(40 CHAR) NOT NULL UNIQUE,
 data_zalozenia DATE DEFAULT SYSDATE NOT NULL,
 budzet NUMBER (12,2) NOT NULL CHECK(budzet >= 0),
-ceo REFERENCES CZLOWIEK(PESEL) NOT NULL);
+ceo REFERENCES CZLOWIEK(PESEL) ON DELETE CASCADE NOT NULL);
 
 create table AKCJA
-(id_spolki PRIMARY KEY REFERENCES SPOLKA(id_spolki)NOT NULL,
-gielda REFERENCES GIELDA(nazwa_gieldy) NOT NULL,
+(id_spolki PRIMARY KEY REFERENCES SPOLKA(id_spolki) ON DELETE CASCADE,
+gielda REFERENCES GIELDA(nazwa_gieldy) ON DELETE CASCADE NOT NULL,
 wartosc NUMBER (12,2) CHECK (wartosc >= 0) NOT NULL,
 ilosc INTEGER NOT NULL CHECK (ilosc >= 0));
 
@@ -51,14 +51,14 @@ create table INWESTOR
 (id_inwestora NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1000 INCREMENT BY 10) PRIMARY KEY NOT NULL,
 budzet NUMBER(12,2) NOT NULL,
 typ VARCHAR2(40 CHAR) NOT NULL CHECK (typ IN('Inwestor indywidualny','Fundusz inwestycyjny','Spolka akcyjna')),
-osoba references CZLOWIEK(pesel) NULL,
-zarzadca references CZLOWIEK(pesel) NULL,
-spolka references SPOLKA(id_spolki) NULL);
+osoba references CZLOWIEK(pesel) ON DELETE CASCADE NULL,
+zarzadca references CZLOWIEK(pesel) ON DELETE CASCADE NULL,
+spolka references SPOLKA(id_spolki) ON DELETE CASCADE NULL);
 
 create table TRANSAKCJA
 (id_transakcji NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY NOT NULL,
-inwestor1 REFERENCES INWESTOR(id_inwestora) NOT NULL,
-inwestor2 REFERENCES INWESTOR(id_inwestora) NOT NULL,
+inwestor1 REFERENCES INWESTOR(id_inwestora) ON DELETE CASCADE NOT NULL,
+inwestor2 REFERENCES INWESTOR(id_inwestora) ON DELETE CASCADE NOT NULL,
 akcja REFERENCES AKCJA(id_spolki) NOT NULL,
 liczba INTEGER NOT NULL,
 cena NUMBER(6,2) NOT NULL CHECK (cena >= 0));
@@ -255,11 +255,11 @@ INSERT INTO GIELDA(nazwa_gieldy, waluta, kraj) VALUES('New York Stock Exchange',
 INSERT INTO GIELDA(nazwa_gieldy, waluta, kraj) VALUES('Frankfurt Stock Exchange', 'EUR', 'Niemcy');
 INSERT INTO GIELDA(nazwa_gieldy, waluta, kraj) VALUES('Tokyo Stock Exchange', 'JPY', 'Japonia');
 --
-INSERT INTO AKCJA VALUES(1000, 'RYNEK PAPIEROW WARTOSCIOWYCH', 34.29, 10000);
-INSERT INTO AKCJA VALUES(1010, 'New York Stock Exchange', 13.58, 15000);
-INSERT INTO AKCJA VALUES(1020, 'Frankfurt Stock Exchange', 73.12, 40000);
-INSERT INTO AKCJA VALUES(1030, 'Tokyo Stock Exchange', 119.97, 9500);
-INSERT INTO AKCJA VALUES(1040, 'RYNEK PAPIEROW WARTOSCIOWYCH', 9.82, 17000);
+INSERT INTO AKCJA VALUES(10000, 'RYNEK PAPIEROW WARTOSCIOWYCH', 34.29, 10000);
+INSERT INTO AKCJA VALUES(10001, 'New York Stock Exchange', 13.58, 15000);
+INSERT INTO AKCJA VALUES(10002, 'Frankfurt Stock Exchange', 73.12, 40000);
+INSERT INTO AKCJA VALUES(10003, 'Tokyo Stock Exchange', 119.97, 9500);
+INSERT INTO AKCJA VALUES(10004, 'RYNEK PAPIEROW WARTOSCIOWYCH', 9.82, 17000);
 --
 INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(9231.13, 'Inwestor indywidualny', 56050123244, null, null);
 INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(48744.61, 'Inwestor indywidualny', 87052797742, null, null);
@@ -273,19 +273,19 @@ INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(1197418.81, 'F
 INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(837891.94, 'Fundusz inwestycyjny', null, 34092180324, null);
 INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(238003.99, 'Fundusz inwestycyjny', null, 57112130279, null);
 --
-INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 1000);
-INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 1010);
-INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 1020);
-INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 1030);
-INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 1040);
+INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 10000);
+INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 10001);
+INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 10002);
+INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 10003);
+INSERT INTO INWESTOR(budzet, typ, osoba, zarzadca, spolka) VALUES(0.0, 'Spolka akcyjna', null, null, 10004);
 --
-call insert_transakcja(1000, 1100, 1000, 50);
-call insert_transakcja(1010, 1110, 1010, 1000);
-call insert_transakcja(1020, 1120, 1020, 67);
-call insert_transakcja(1030, 1130, 1030, 38);
-call insert_transakcja(1040, 1140, 1040, 19);
-call insert_transakcja(1050, 1100, 1000, 80);
-call insert_transakcja(1060, 1110, 1010, 10);
-call insert_transakcja(1070, 1120, 1020, 240);
-call insert_transakcja(1080, 1130, 1030, 900);
-call insert_transakcja(1090, 1140, 1040, 100);
+call insert_transakcja(1000, 1100, 10000, 50);
+call insert_transakcja(1010, 1110, 10001, 1000);
+call insert_transakcja(1020, 1120, 10002, 67);
+call insert_transakcja(1030, 1130, 10003, 38);
+call insert_transakcja(1040, 1140, 10004, 19);
+call insert_transakcja(1050, 1100, 10000, 80);
+call insert_transakcja(1060, 1110, 10001, 10);
+call insert_transakcja(1070, 1120, 10002, 240);
+call insert_transakcja(1080, 1130, 10003, 900);
+call insert_transakcja(1090, 1140, 10004, 100);

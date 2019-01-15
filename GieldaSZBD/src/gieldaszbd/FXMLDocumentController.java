@@ -32,6 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -98,7 +99,6 @@ public class FXMLDocumentController implements Initializable {
         }
         return true;
     }
-
     public static boolean toDouble(String strNum) {
         try {
             Double n = Double.parseDouble(strNum);
@@ -129,7 +129,6 @@ public class FXMLDocumentController implements Initializable {
         stmt.close();
         cb_akcje.setItems(akcje);
     }
-
     void updateCBwal() throws SQLException {
         ObservableList<String> czlowiek = FXCollections.observableArrayList();
         Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -156,9 +155,7 @@ public class FXMLDocumentController implements Initializable {
                 "Waluta",
                 "Państwa",
                 "Gielda",
-                "Kursy",
-                "Transakcje"
-        );
+                "Kursy");
 
         relacje2 = FXCollections.observableArrayList(
                 "Człowiek",
@@ -340,7 +337,6 @@ public class FXMLDocumentController implements Initializable {
             }
         });
     }
-
     private void utworzTabele(ResultSet rs, Statement stmt, String rel, String find) throws SQLException {
         TablicaEncja.getColumns().clear();//czyści kolumny na początku
         dataTabelki = FXCollections.observableArrayList();
@@ -348,39 +344,26 @@ public class FXMLDocumentController implements Initializable {
         if ("Czlowiek".equals(rel)) {
             rs = stmt.executeQuery("select * from czlowiek" + find);
         }
-        if ("Inwestor".equals(rel)) {
+        else if ("Inwestor".equals(rel)) {
             rs = stmt.executeQuery("select id_inwestora, budzet, typ, osoba, zarzadca, spolka from inwestor" + find);
         }
-        if ("Spółki".equals(rel)) {
+        else if ("Spółki".equals(rel)) {
             rs = stmt.executeQuery("select nazwa_spolki, to_char(data_zalozenia,'YYYY-MM-DD') as Data_założenia, budzet, ceo from spolka" + find);
         }
-        if ("Akcja".equals(rel)) {
+        else if ("Akcja".equals(rel)) {
             rs = stmt.executeQuery("select id_spolki, gielda, wartosc, ilosc as LICZBA from akcja" + find);
         }
-        if ("Waluta".equals(rel)) {
+        else if ("Waluta".equals(rel)) {
             rs = stmt.executeQuery("select * from waluta" + find);
         }
-        if ("Państwa".equals(rel)) {
+        else if ("Państwa".equals(rel)) {
             rs = stmt.executeQuery("select * from panstwo" + find);
         }
-        if ("Gielda".equals(rel)) {
+        else if ("Gielda".equals(rel)) {
             rs = stmt.executeQuery("select * from gielda" + find);
         }
-        if ("Kursy".equals(rel)) {
+        else if ("Kursy".equals(rel)) {
             rs = stmt.executeQuery("select * from kurs" + find);
-        }
-        if ("Transakcje".equals(rel)) {
-            rs = stmt.executeQuery("select id_transakcji,"
-                    + "(SELECT NVL((SELECT imie || ' ' || nazwisko from czlowiek where pesel=osoba), '') "
-                    + "|| NVL((SELECT imie || ' ' || nazwisko from czlowiek where pesel=zarzadca), '') "
-                    + "|| NVL((SELECT nazwa_spolki from spolka where id_spolki=spolka), '') "
-                    + "FROM inwestor where id_inwestora=inwestor1) as KUPUJĄCY, "
-                    + "(SELECT NVL((SELECT imie || ' ' || nazwisko from czlowiek where pesel=osoba), '') "
-                    + "|| NVL((SELECT imie || ' ' || nazwisko from czlowiek where pesel=zarzadca), '') "
-                    + "|| NVL((SELECT nazwa_spolki from spolka where id_spolki=spolka), '') "
-                    + "FROM inwestor where id_inwestora=inwestor2) as SPRZEDAJĄCy, "
-                    + "(SELECT nazwa_spolki FROM spolka WHERE id_spolki=akcja) as AKCJA, "
-                    + "liczba, cena from transakcja" + find);
         }
 
         for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
@@ -414,7 +397,6 @@ public class FXMLDocumentController implements Initializable {
         //FINALLY ADDED TO TableView
         TablicaEncja.setItems(dataTabelki);
     }
-
     private void utworzTabeleTransakcje() throws SQLException {
         transakcje.getColumns().clear();//czyści kolumny na początku
         dataTabelki = FXCollections.observableArrayList();
@@ -462,7 +444,6 @@ public class FXMLDocumentController implements Initializable {
         //FINALLY ADDED TO TableView
         transakcje.setItems(dataTabelki);
     }
-
     private void search(String text) {
         Statement stmt = null;
         ResultSet rs = null;
@@ -519,7 +500,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
     }
-
+    
     private void editCzlowiek(ObservableList<String> selected) throws SQLException {
         //Poprawność wprowadzonych danych:
         Text czlowiekImieNazwiskoError = new Text();
@@ -579,6 +560,25 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         });
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from czlowiek where pesel="
+                                + selected.get(0));
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });
+        
         vbox.getChildren().add(czlowiekImieNazwiskoError);
         vbox.getChildren().add(imie);
         vbox.getChildren().add(timie);
@@ -586,9 +586,12 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(tnazwisko);
         vbox.getChildren().add(kraj);
         vbox.getChildren().add(cbkraj);
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }
-
     private void editInwestor(ObservableList<String> selected) throws SQLException {
         //Poprawność wprowadzonych danych:
         Text inwestorBudzetError = new Text();
@@ -612,6 +615,25 @@ public class FXMLDocumentController implements Initializable {
         Button button1 = new Button();
         button1.setText("Zapisz");
 
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from inwestor where id_inwestora="
+                                + selected.get(0));
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });
+        
         vbox.getChildren().add(inwestorBudzetError);
         vbox.getChildren().add(budzet);
         vbox.getChildren().add(tbudzet);
@@ -715,10 +737,12 @@ public class FXMLDocumentController implements Initializable {
                 }
             });
         }
-
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }//to do
-
     private void editSpolka(ObservableList<String> selected) throws SQLException {
         Label data = new Label();
         data.setText("Data założenia");
@@ -781,6 +805,27 @@ public class FXMLDocumentController implements Initializable {
 
             }
         });
+        
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from spolka where nazwa_spolki='"
+                                + selected.get(0)
+                                + "'");
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });
+        
         vbox.getChildren().add(spolkaDataBudzetError);
         vbox.getChildren().add(data);
         vbox.getChildren().add(tdata);
@@ -788,9 +833,12 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(tbudzet);
         vbox.getChildren().add(ceo);
         vbox.getChildren().add(cbczlowiek);
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }
-
     private void editAkcja(ObservableList<String> selected) throws SQLException {
         Label gielda = new Label();
         gielda.setText("Giełda");
@@ -856,6 +904,7 @@ public class FXMLDocumentController implements Initializable {
 
             }
         });
+        
         vbox.getChildren().add(akcjaWartoscLiczbaAkcjiError);
         vbox.getChildren().add(gielda);
         vbox.getChildren().add(cbgielda);
@@ -865,7 +914,6 @@ public class FXMLDocumentController implements Initializable {
         vbox.getChildren().add(tliczba);
         vbox.getChildren().add(button1);
     }
-
     private void editWaluta(ObservableList<String> selected) throws SQLException {
         Label wartosc = new Label();
         wartosc.setText("Wartość");
@@ -900,12 +948,36 @@ public class FXMLDocumentController implements Initializable {
 
             }
         });
+        
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from waluta where nazwa_waluty='"
+                                + selected.get(0)
+                                + "'");
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });
+        
         vbox.getChildren().add(walutaWartoscError);
         vbox.getChildren().add(wartosc);
         vbox.getChildren().add(twartosc);
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }
-
     private void editPanstwo(ObservableList<String> selected) throws SQLException {
         Label skrot = new Label();
         skrot.setText("Skrót");
@@ -958,14 +1030,38 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         });
+        
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from panstwo where nazwa='"
+                                + selected.get(0)
+                                +"'");
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });        
+        
         vbox.getChildren().add(panstwoSkrotError);
         vbox.getChildren().add(skrot);
         vbox.getChildren().add(tskrot);
         vbox.getChildren().add(waluta);
         vbox.getChildren().add(cbwaluta);
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }
-
     private void editGielda(ObservableList<String> selected) throws SQLException {
         Label waluta = new Label();
         waluta.setText("Waluta");
@@ -1019,13 +1115,37 @@ public class FXMLDocumentController implements Initializable {
             }
         });
 
+        Button button2 = new Button();
+        button2.setText("Usuń");
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+               try {
+                        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery(
+                                "delete from gielda where nazwa_gieldy='"
+                                + selected.get(0)
+                                + "'");
+                        stmt.close();
+                        rs.close();
+                        search(textField_find.getText());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });        
+
         vbox.getChildren().add(waluta);
         vbox.getChildren().add(cbwaluta);
         vbox.getChildren().add(kraj);
         vbox.getChildren().add(cbkraj);
-        vbox.getChildren().add(button1);
+        HBox hbox = new HBox();
+        hbox.setSpacing(10.0d);
+        hbox.getChildren().add(button1);
+        hbox.getChildren().add(button2);
+        vbox.getChildren().add(hbox);
     }
-
+    
     private void addCzlowiek() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text czlowiekAddError = new Text();
@@ -1099,7 +1219,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbkraj);
         vbox2.getChildren().add(button1);
     }
-
     private void addInwestorIndywidualny() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text inwestorIndywidualnyAddError = new Text();
@@ -1160,7 +1279,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbludzie);
         vbox2.getChildren().add(button1);
     }
-
     private void addFunduszInwestycyjny() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text funduszInwestycyjnyAddError = new Text();
@@ -1221,7 +1339,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbludzie);
         vbox2.getChildren().add(button1);
     }
-
     private void addSpolka() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text spolkaAddError = new Text();
@@ -1377,7 +1494,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbgielda);
         vbox2.getChildren().add(button1);
     }
-
     private void addWaluta() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text walutaAddError = new Text();
@@ -1427,7 +1543,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(twartosc);
         vbox2.getChildren().add(button1);
     }
-
     private void addPanstwo() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text panstwoAddError = new Text();
@@ -1494,7 +1609,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbwaluta);
         vbox2.getChildren().add(button1);
     }
-
     private void addGielda() throws SQLException {
         //Poprawność wprowadzonych danych:
         Text gieldaAddError = new Text();
@@ -1572,7 +1686,6 @@ public class FXMLDocumentController implements Initializable {
         vbox2.getChildren().add(cbkraj);
         vbox2.getChildren().add(button1);
     }
-
     private void addTransakcja(VBox vboxx) throws SQLException {
         //Poprawność wprowadzonych danych:
         Text transakcjaAddError = new Text();
