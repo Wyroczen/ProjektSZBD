@@ -455,28 +455,36 @@ public class FXMLDocumentController implements Initializable {
             } else {
                 String find = "";
                 if ("Czlowiek".equals(currTable)) {
-                    find += " WHERE UPPER(PESEL) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(IMIE) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(NAZWISKO) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(PESEL) LIKE UPPER('%" + text + "%') OR "
+                            + "UPPER(IMIE) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(narodowosc) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(NAZWISKO) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(NAZWISKO || IMIE) LIKE UPPER('%" + text + "%')";
                 } else if ("Inwestor".equals(currTable)) {
-                    find += " WHERE UPPER(PESEL) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(IMIE) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(NAZWISKO) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(id_inwestora) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(typ) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(osoba) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(zarzadca) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(spolka) LIKE UPPER('" + text + "%') ";
                 } else if ("Spółki".equals(currTable)) {
-                    find += " WHERE UPPER(nazwa_spolki) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(CEO) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(nazwa_spolki) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(CEO) LIKE UPPER('" + text + "%')";
                 } else if ("Akcja".equals(currTable)) {
-                    find += " WHERE UPPER(id_spolki) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(id_spolki) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(gielda) LIKE UPPER('" + text + "%') ";
                 } else if ("Waluta".equals(currTable)) {
-                    find += " WHERE UPPER(nazwa_waluta) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(nazwa_waluty) LIKE UPPER('" + text + "%')";
                 } else if ("Państwa".equals(currTable)) {
-                    find += " WHERE UPPER(nazwa) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(waluta) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(skrot) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(nazwa) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(waluta) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(skrot) LIKE UPPER('" + text + "%')";
                 } else if ("Gielda".equals(currTable)) {
-                    find += " WHERE UPPER(nazwa_rynku) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(waluta) LIKE UPPER('" + text + "') OR "
-                            + "UPPER(panstwo) LIKE UPPER('" + text + "')";
+                    find += " WHERE UPPER(nazwa_gieldy) LIKE UPPER('%" + text + "%') OR "
+                            + "UPPER(waluta) LIKE UPPER('%" + text + "%') OR "
+                            + "UPPER(kraj) LIKE UPPER('%" + text + "%')";
+                } else if ("Kursy".equals(currTable)) {
+                    find += " WHERE UPPER(waluta1) LIKE UPPER('" + text + "%') OR "
+                            + "UPPER(waluta2) LIKE UPPER('" + text + "%')";
                 }
 
                 utworzTabele(rs, stmt, currTable, find);
